@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced YouTube SEO & Research Suite</title>
+    
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #ff2d08; --gradient-start: #d40438; --gradient-end: #110666; --border-radius: 12px;
+            /* Light Theme */
+            --background-color: #f4f6f9; --card-background: #ffffff; --text-color: #333; --subtle-text-color: #6c757d; --shadow-color: rgba(0, 0, 0, 0.08); --border-color: #e9ecef; --tag-bg: #eef2f7; --tag-text: #5a7391; --chip-bg: #e7f3ff; --chip-text: #065fd4; --chip-bg-hover: #d0e7ff; --info-box-bg: #f8f9fa;
+        }
+        body.dark-mode {
+            /* Dark Theme */
+            --background-color: #121212; --card-background: #1e1e1e; --text-color: #e0e0e0; --subtle-text-color: #888888; --shadow-color: rgba(0, 0, 0, 0.4); --border-color: #333; --tag-bg: #2c3e50; --tag-text: #bdc3c7; --chip-bg: #2a3d52; --chip-text: #a7c5e8; --chip-bg-hover: #3a506b; --info-box-bg: #2a2a2a;
+        }
+        /* --- Base & Animation Styles --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; transition: background-color 0.3s ease, color 0.3s ease; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .main-header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: white; padding: 2.5rem 2rem; text-align: center; border-radius: var(--border-radius);
+            margin-bottom: 2rem; box-shadow: 0 8px 25px rgba(255, 75, 43, 0.3); position: relative;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        h1 { font-weight: 700; margin: 0 80px; font-size: 2.2rem; }
+        .header-sub-text { margin-top: 0.5rem; opacity: 0.9; }
+        .hidden { display: none !important; }
+
+        /* --- Profile & Theme Icons --- */
+        .profile-link { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; font-weight: 500; transition: transform 0.2s; }
+        .profile-link:hover { transform: translateY(-50%) scale(1.05); }
+        .profile-link img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); }
+        .profile-link span { opacity: 0; transition: opacity 0.3s; }
+        .profile-link:hover span { opacity: 1; }
+        
+        .theme-toggle { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); background: rgba(255, 255, 255, 0.2); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease, transform 0.3s ease; overflow: hidden; }
+        .theme-toggle:hover { transform: translateY(-50%) scale(1.1); }
+        .theme-toggle i { position: absolute; transition: transform 0.4s ease-in-out, opacity 0.3s ease; }
+        .theme-toggle .fa-sun { transform: translateY(50px); opacity: 0; }
+        body.dark-mode .theme-toggle .fa-moon { transform: translateY(-50px); opacity: 0; }
+        body.dark-mode .theme-toggle .fa-sun { transform: translateY(0); opacity: 1; }
+        
+        /* --- DASHBOARD & CARD LAYOUT --- */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+        .suite-card {
+            background: var(--card-background); padding: 25px; border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-color); animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0; animation-fill-mode: forwards;
+        }
+        /* Card spanning */
+        #keyword-explorer-card { grid-column: span 12; animation-delay: 0.1s; }
+        #secondary-tools-grid { grid-column: span 12; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        #content-tools-card { grid-column: span 12; }
+        #trending-card { grid-column: span 12; animation-delay: 0.4s; }
+        .suite-card h2.toolkit-title { margin-top: 0; font-size: 1.4rem; }
+
+        /* --- Forms --- */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 12px 20px; font-size: 1rem; border: 1px solid var(--border-color); background-color: var(--card-background); color: var(--text-color); border-radius: var(--border-radius); box-sizing: border-box; transition: all 0.3s; }
+        .form-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(255, 75, 43, 0.2); }
+        .btn-primary { padding: 12px 30px; font-size: 1rem; font-weight: 600; background-color: var(--primary-color); color: white; border: none; border-radius: 50px; cursor: pointer; transition: all 0.2s; }
+        .btn-primary:hover { background-color: #e04020; transform: scale(1.05); }
+        .search-container { position: relative; }
+        .search-container button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); padding: 10px 25px; }
+
+        /* --- General & Tool-specific Styles --- */
+        .toolkit-title { margin-top: 0; margin-bottom: 15px; font-size: 1.25rem; font-weight: 600; border-left: 4px solid var(--primary-color); padding-left: 10px; }
+        .tool-description { color: var(--subtle-text-color); margin-top: -10px; margin-bottom: 20px; }
+        #loading { text-align: center; padding: 40px; }
+        .spinner { border: 5px solid rgba(0, 0, 0, 0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--primary-color); animation: spin 1s ease infinite; margin: 0 auto 15px; }
+        .error-message { text-align: center; color: #e74c3c; font-weight: 500; padding: 20px; background-color: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); border-radius: var(--border-radius); }
+        
+        /* --- View Options Bar --- */
+        .view-options-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; background: var(--info-box-bg); padding: 10px 20px; border-radius: var(--border-radius); }
+        .view-options-group { display: flex; align-items: center; gap: 10px; }
+        .view-options-group label { font-weight: 500; }
+        .view-btn { background: var(--tag-bg); color: var(--tag-text); border: none; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .view-btn.active, .view-btn:hover { background-color: var(--primary-color); color: white; }
+
+        /* --- Keyword Explorer --- */
+        #keyword-analysis-container { margin-bottom: 2rem; }
+        .keyword-analysis-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; background-color: var(--info-box-bg); padding: 25px; border-radius: var(--border-radius); }
+        .stat-item h4 { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--subtle-text-color); font-weight: 500; text-transform: uppercase; }
+        .stat-item .stat-value { font-size: 1.5rem; font-weight: 600; color: var(--text-color); }
+        .stat-item .opportunity-score { padding: 5px 10px; border-radius: 6px; font-weight: 700; display: inline-block; }
+        .score-easy { background-color: #2ecc71; color: white; }
+        .score-medium { background-color: #f1c40f; color: #333; }
+        .score-hard { background-color: #e74c3c; color: white; }
+        .score-very-hard { background-color: #9b59b6; color: white; }
+        
+        .keyword-toolkit { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: flex-start; }
+        .related-keywords-box, .selected-keywords-box { background: var(--card-background); padding: 20px; border-radius: var(--border-radius); box-shadow: 0 4px 15px var(--shadow-color); }
+        .keywords-wrapper { display: flex; flex-wrap: wrap; gap: 8px; }
+        .related-keyword-chip { display: flex; align-items: center; gap: 8px; background-color: var(--chip-bg); color: var(--chip-text); padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; border: none; transition: background-color 0.2s ease, transform 0.2s ease; }
+        .related-keyword-chip:hover:not(.added) { background-color: var(--chip-bg-hover); transform: translateY(-2px); }
+        .related-keyword-chip.added { background-color: #27ae60; color: white; cursor: default; }
+        #selected-keywords-textarea { width: 100%; height: 120px; resize: vertical; margin-bottom: 10px; }
+        .selected-keywords-actions { display: flex; gap: 10px; }
+        .selected-keywords-actions button { flex: 1; padding: 8px; font-size: 0.9rem; font-weight: 500; border-radius: 8px; }
+        .btn-secondary { background-color: var(--tag-bg); color: var(--tag-text); border: 1px solid var(--border-color); }
+
+        /* --- Rank Checker --- */
+        #rank-check-result, #trending-error { margin-top: 1.5rem; text-align: center; font-size: 1.1rem; font-weight: 500; }
+        #rank-check-result .rank-found { color: #2ecc71; }
+        #rank-check-result .rank-not-found { color: #e74c3c; }
+
+        /* --- Video & Channel Analyzer --- */
+        .analysis-result-container { margin-top: 2rem; }
+        .video-analysis-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: flex-start; }
+        .video-analysis-grid .thumbnail-container img { width: 100%; border-radius: var(--border-radius); }
+        .video-stats-detailed { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .description-box { margin-top: 1.5rem; background-color: var(--info-box-bg); padding: 20px; border-radius: var(--border-radius); white-space: pre-wrap; font-size: 0.95rem; max-height: 300px; overflow-y: auto; }
+        .tags-box { margin-top: 1.5rem; }
+        .tags-box .keywords-wrapper { max-height: 200px; overflow-y: auto; padding-right: 10px; }
+        .tag-chip { background-color: var(--tag-bg); color: var(--tag-text); padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; }
+        
+        .channel-header { display: flex; gap: 20px; align-items: center; margin-bottom: 2rem; }
+        .channel-header img.channel-pfp { width: 80px; height: 80px; border-radius: 50%; }
+        .channel-header .channel-name { font-size: 1.8rem; font-weight: 700; margin: 0; }
+        .channel-header .channel-handle { color: var(--subtle-text-color); font-size: 1.1rem; }
+        .channel-banner { width: 100%; height: 200px; object-fit: cover; border-radius: var(--border-radius); margin-bottom: -60px; }
+        .channel-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+
+        /* --- Content Tools --- */
+        .content-tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: flex-start; }
+        #generated-titles-list li { background: var(--info-box-bg); padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { background: none; border: none; color: var(--subtle-text-color); cursor: pointer; font-size: 1rem; }
+        .copy-btn:hover { color: var(--primary-color); }
+        #generated-tags-textarea { height: 200px; resize: vertical; }
+
+        /* --- Video Grid & Cards --- */
+        .results-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(var(--grid-columns, 4), 1fr); margin-top: 2rem; }
+        .animated-item { opacity: 0; transform: translateY(30px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+        .animated-item.is-visible { opacity: 1; transform: translateY(0); }
+        .video-card { display: flex; flex-direction: column; background: var(--card-background); border-radius: var(--border-radius); box-shadow: 0 4px 20px var(--shadow-color); overflow: hidden; height: 100%; }
+        .video-card:hover { transform: translateY(-5px) !important; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); }
+        .video-card .thumbnail-container { position: relative; width: 100%; padding-top: 56.25%; /* 16:9 Aspect Ratio */ }
+        .video-card .thumbnail-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .video-duration { position: absolute; bottom: 5px; right: 5px; background-color: rgba(0, 0, 0, 0.75); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .video-details { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .video-details h3 { font-size: 1rem; margin: 0 0 8px; line-height: 1.4; height: 4.2em; overflow: hidden; }
+        .video-details h3 a { text-decoration: none; color: var(--text-color); }
+        .video-details .channel-info { font-size: 0.8rem; color: var(--subtle-text-color); margin-bottom: 10px; }
+        .video-stats { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.8rem; margin-top: auto; padding-top: 10px; }
+        .video-stats span { display: flex; align-items: center; }
+        .video-stats i { color: var(--subtle-text-color); margin-right: 5px; }
+        
+        /* --- MOBILE RESPONSIVE STYLES --- */
+        @media (max-width: 1200px) {
+            .results-grid { --grid-columns: 3 !important; }
+        }
+        @media (max-width: 992px) {
+            .dashboard-grid, #secondary-tools-grid { grid-template-columns: 1fr; }
+            #keyword-explorer-card, #secondary-tools-grid, #content-tools-card, #trending-card { grid-column: span 1; }
+            .keyword-toolkit, .content-tools-grid { grid-template-columns: 1fr; }
+            .video-analysis-grid { grid-template-columns: 1fr; }
+            .results-grid { --grid-columns: 2 !important; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.5rem; margin: 0; text-align: left; }
+            .header-sub-text { font-size: 0.9rem; text-align: left; }
+            .profile-link, .theme-toggle { top: 20px; transform: none; }
+            .profile-link { left: 15px; }
+            .theme-toggle { right: 15px; }
+            .profile-link span { display: none; }
+            .main-header { padding-top: 5rem; padding-bottom: 1.5rem; }
+            .view-options-bar { flex-direction: column; gap: 15px; align-items: stretch; }
+            .view-options-group { justify-content: space-between; }
+            .results-grid { --grid-columns: 1 !important; }
+            .channel-header { flex-direction: column; text-align: center; }
+            .content-tools-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-container" class="container">
+        <header class="main-header">
+            <a href="https://www.youtube.com/@akashkailashiya" target="_blank" class="profile-link" title="Visit Akash Kailashiya's Channel">
+                <img src="https://yt3.googleusercontent.com/8v5OgQIC0Yy5sijw_Nl5wvH-W3DQw2SLF8mAfwjzEB2QrofDuFtMeH_2bh3BylvRLBEG8av5rQ=s160-c-k-c0x00ffffff-no-rj" alt="Akash Kailashiya">
+                <span>Akash Kailashiya</span>
+            </a>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+            <h1>YouTube Research Suite Pro ⚡</h1>
+            <p class="header-sub-text">Your all-in-one toolkit for YouTube success.</p>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Keyword Explorer Card -->
+            <section id="keyword-explorer-card" class="suite-card">
+                <h2 class="toolkit-title">Keyword Explorer</h2>
+                <p class="tool-description">The ultimate tool for discovering video ideas and analyzing keyword potential.</p>
+                <div class="search-container form-group">
+                    <form id="research-form">
+                        <input type="text" id="keyword-input" class="form-control" placeholder="e.g., best budget camera for youtube" required>
+                        <button type="submit" class="btn-primary"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+                <div id="keyword-explorer-loading" class="hidden"></div>
+                <div id="keyword-explorer-results" class="hidden">
+                    <div id="keyword-analysis-container"></div>
+                    <div id="keyword-toolkit-container"></div>
+                    <div id="view-options-container"></div>
+                    <div id="results-container" class="results-grid"></div>
+                </div>
+                 <div id="load-more-container" class="hidden" style="text-align:center; margin-top: 2rem;">
+                    <button id="loadMoreBtn" class="btn-primary">Load More Videos</button>
+                </div>
+            </section>
+
+            <!-- Grid for smaller tools -->
+            <div id="secondary-tools-grid">
+                <!-- Video Analyzer Card -->
+                <section id="video-analyzer-card" class="suite-card" style="animation-delay: 0.2s;">
+                    <h2 class="toolkit-title">Video Analyzer</h2>
+                    <p class="tool-description">Get a breakdown of any video's stats, description, and tags.</p>
+                    <form id="video-analysis-form">
+                        <div class="form-group"><input type="text" id="video-url-input" class="form-control" placeholder="Enter YouTube Video URL or ID" required></div>
+                        <button type="submit" class="btn-primary">Analyze Video</button>
+                    </form>
+                    <div id="video-analysis-loading" class="hidden"></div>
+                    <div id="video-analysis-result" class="analysis-result-container"></div>
+                </section>
+
+                <!-- Channel Analyzer Card -->
+                <section id="channel-analyzer-card" class="suite-card" style="animation-delay: 0.3s;">
+                    <h2 class="toolkit-title">Channel Analyzer</h2>
+                    <p class="tool-description">Get key stats and recent videos from any YouTube channel.</p>
+                    <form id="channel-analysis-form">
+                        <div class="form-group"><input type="text" id="channel-url-input" class="form-control" placeholder="Enter Channel URL, ID, or @handle" required></div>
+                        <button type="submit" class="btn-primary">Analyze Channel</button>
+                    </form>
+                    <div id="channel-analysis-loading" class="hidden"></div>
+                    <div id="channel-analysis-result" class="analysis-result-container"></div>
+                </section>
+
+                <!-- Rank Checker Card -->
+                <section id="rank-checker-card" class="suite-card" style="animation-delay: 0.4s;">
+                    <h2 class="toolkit-title">Check Video Rank</h2>
+                    <p class="tool-description">See if a video appears in the top ~60 results for a keyword.</p>
+                    <form id="rank-check-form">
+                        <div class="form-group"><label for="video-id-input">Video ID or URL</label><input type="text" id="video-id-input" class="form-control" placeholder="e.g., qh221_vH_aE" required></div>
+                        <div class="form-group"><label for="rank-keyword-input">Keyword to Check</label><input type="text" id="rank-keyword-input" class="form-control" placeholder="e.g., unboxing new macbook" required></div>
+                        <button type="submit" class="btn-primary">Check Rank</button>
+                    </form>
+                    <div id="rank-check-loading" class="hidden"></div>
+                    <div id="rank-check-result"></div>
+                </section>
+            </div>
+            
+            <!-- Content Tools Card -->
+            <section id="content-tools-card" class="suite-card">
+                <div class="content-tools-grid">
+                    <div>
+                         <h2 class="toolkit-title">Title Generator</h2>
+                         <p class="tool-description">Get catchy title ideas for your keyword.</p>
+                         <form id="title-generator-form">
+                            <div class="search-container form-group">
+                                <input type="text" id="title-keyword-input" class="form-control" placeholder="Your primary keyword" required>
+                                <button type="submit" class="btn-primary"><i class="fas fa-lightbulb"></i></button>
+                            </div>
+                         </form>
+                         <ul id="generated-titles-list" style="list-style: none; padding: 0;"></ul>
+                    </div>
+                    <div>
+                        <h2 class="toolkit-title">Tag Generator</h2>
+                        <p class="tool-description">Generate relevant tags for your video topic.</p>
+                        <form id="tag-generator-form">
+                            <div class="search-container form-group">
+                                <input type="text" id="tag-keyword-input" class="form-control" placeholder="Your primary topic" required>
+                                <button type="submit" class="btn-primary"><i class="fas fa-tags"></i></button>
+                            </div>
+                        </form>
+                        <div id="tag-generator-loading" class="hidden"></div>
+                        <div id="tag-generator-result" class="hidden">
+                            <textarea id="generated-tags-textarea" class="form-control" readonly></textarea>
+                            <button id="copy-tags-btn" class="btn-primary" style="margin-top: 10px; width: 100%; border-radius: 8px;">Copy Tags</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trending Card -->
+            <section id="trending-card" class="suite-card">
+                <div style="display:flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <h2 class="toolkit-title" style="margin:0;">Trending Videos</h2>
+                    <div class="form-group" style="margin:0;">
+                        <select id="region-select" class="form-control" style="width: auto;">
+                            <option value="US">United States</option><option value="GB">United Kingdom</option><option value="IN">India</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="DE">Germany</option><option value="FR">France</option><option value="JP">Japan</option><option value="BR">Brazil</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="trending-loading" class="hidden"></div>
+                <div id="trending-results" class="results-grid" style="margin-top:0;"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- HTML Templates -->
+    <template id="loading-template"><div class="spinner"></div></template>
+    <template id="error-template"><div class="error-message"></div></template>
+    <template id="view-options-template">
+        <div class="view-options-bar animated-item">
+            <div class="view-options-group"><label>Grid:</label><button class="view-btn" data-columns="1" title="1 Column"><i class="fas fa-square"></i></button><button class="view-btn" data-columns="2" title="2 Columns"><i class="fas fa-th-large"></i></button><button class="view-btn" data-columns="3" title="3 Columns"><i class="fas fa-th"></i></button><button class="view-btn active" data-columns="4" title="4 Columns"><i class="fas fa-grip-horizontal"></i></button></div>
+        </div>
+    </template>
+    <template id="generated-title-template">
+        <li><span></span><button class="copy-btn" title="Copy"><i class="far fa-copy"></i></button></li>
+    </template>
+    
+    <script>
+    // --- CONFIG & DOM ---
+    const API_KEY = 'AIzaSyBdXb28m2xUyeADO5PfRYKl81QU4BjYGd4';
+    const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
+    const doc = document;
+    // NOTE: The main container for view-width toggling is now the body itself for simplicity in the new layout.
+    const mainContainer = doc.body;
+
+    // --- STATE ---
+    let nextPageToken = '';
+    let currentKeyword = '';
+    let selectedKeywords = new Set();
+    let jsonpCallbackId = 0;
+
+    // --- ANIMATION OBSERVER ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // --- HELPER FUNCTIONS ---
+    const formatNumber = (num) => num ? new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(num) : '0';
+    const formatNumberLong = (num) => num ? new Intl.NumberFormat('en-US').format(num) : '0';
+    const formatDuration = (iso) => { const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/); if (!m) return "0:00"; const h = parseInt(m[1] || 0), n = parseInt(m[2] || 0), s = parseInt(m[3] || 0); return h > 0 ? `${h}:${String(n).padStart(2, "0")}:${String(s).padStart(2, "0")}` : `${n}:${String(s).padStart(2, "0")}`; };
+    const showLoading = (container) => { container.innerHTML = ''; container.appendChild(doc.getElementById('loading-template').content.cloneNode(true)); container.classList.remove('hidden'); };
+    const hideLoading = (container) => { container.classList.add('hidden'); container.innerHTML = ''; };
+    const showError = (container, message) => { const errorEl = doc.getElementById('error-template').content.cloneNode(true); errorEl.querySelector('.error-message').textContent = message; container.innerHTML = ''; container.appendChild(errorEl); container.classList.remove('hidden'); };
+    const copyToClipboard = (text, btn) => {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => { btn.innerHTML = originalContent; }, 2000);
+        });
+    };
+    const parseVideoId = (input) => {
+        const regex = /(?:v=|\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        const match = input.match(regex);
+        return match ? match[1] : input; // Fallback to raw input if no match
+    };
+
+    // --- THEME & VIEW OPTIONS ---
+    const applyTheme = (theme) => doc.body.classList.toggle('dark-mode', theme === 'dark');
+    function setupViewOptions() {
+        const container = doc.getElementById('view-options-container');
+        container.innerHTML = '';
+        container.appendChild(doc.getElementById('view-options-template').content.cloneNode(true));
+        observer.observe(container.querySelector('.animated-item'));
+
+        const gridBtns = container.querySelectorAll('[data-columns]');
+        const resultsContainer = doc.getElementById('results-container');
+        gridBtns.forEach(btn => btn.addEventListener('click', (e) => {
+            const columns = e.currentTarget.dataset.columns;
+            resultsContainer.style.setProperty('--grid-columns', columns);
+            localStorage.setItem('gridColumns', columns);
+            gridBtns.forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+        }));
+        applySavedViewPreferences(gridBtns, resultsContainer);
+    }
+    function applySavedViewPreferences(gridBtns, resultsContainer) {
+        const savedColumns = localStorage.getItem('gridColumns') || '4';
+        resultsContainer.style.setProperty('--grid-columns', savedColumns);
+        gridBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.columns === savedColumns));
+    }
+    
+    // --- SHARED DISPLAY FUNCTION ---
+    function displayVideoResults(videos, container) {
+        videos.forEach((video, index) => {
+            const card = doc.createElement('div');
+            card.className = 'video-card animated-item';
+            card.style.transitionDelay = `${index * 50}ms`;
+            card.innerHTML = `
+                <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" rel="noopener noreferrer" class="thumbnail-container">
+                    <img src="${video.snippet.thumbnails.high?.url || video.snippet.thumbnails.medium.url}" alt="${video.snippet.title}" loading="lazy">
+                    <span class="video-duration">${video.contentDetails && video.contentDetails.duration ? formatDuration(video.contentDetails.duration) : ''}</span>
+                </a>
+                <div class="video-details">
+                    <h3><a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" rel="noopener noreferrer" title="${video.snippet.title}">${video.snippet.title}</a></h3>
+                    <p class="channel-info">${video.snippet.channelTitle}</p>
+                    <div class="video-stats">
+                        <span><i class="fas fa-eye"></i> <strong>${formatNumber(video.statistics?.viewCount)}</strong></span>
+                        <span><i class="fas fa-thumbs-up"></i> <strong>${formatNumber(video.statistics?.likeCount)}</strong></span>
+                        <span><i class="fas fa-comment"></i> <strong>${formatNumber(video.statistics?.commentCount)}</strong></span>
+                    </div>
+                </div>`;
+            container.appendChild(card);
+            observer.observe(card);
+        });
+    }
+
+    // --- YOUTUBE AUTOCOMPLETE (JSONP) ---
+    function fetchAutocompleteSuggestions(query) {
+        return new Promise((resolve, reject) => {
+            const callbackName = `jsonp_callback_${jsonpCallbackId++}`;
+            const script = doc.createElement('script');
+            script.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}&callback=${callbackName}`;
+            window[callbackName] = (data) => {
+                const suggestions = data[1].map(item => item[0]);
+                resolve(suggestions);
+                doc.body.removeChild(script);
+                delete window[callbackName];
+            };
+            script.onerror = (err) => { reject(err); doc.body.removeChild(script); delete window[callbackName]; };
+            doc.body.appendChild(script);
+        });
+    }
+
+    // --- KEYWORD EXPLORER ---
+    function startNewSearch(keyword) {
+        if (!keyword) return;
+        currentKeyword = keyword;
+        doc.getElementById('keyword-input').value = keyword;
+        doc.getElementById('keyword-explorer-results').classList.add('hidden');
+        executeKeywordSearch(keyword);
+    }
+    async function executeKeywordSearch(keyword, pageToken = '') {
+        const loadingContainer = doc.getElementById('keyword-explorer-loading');
+        const resultsContainer = doc.getElementById('results-container');
+        if (!pageToken) {
+            resultsContainer.innerHTML = '';
+            showLoading(loadingContainer);
+            doc.getElementById('keyword-explorer-results').classList.add('hidden');
+        }
+        try {
+            const searchUrl = `${YOUTUBE_API_BASE_URL}/search?part=id&q=${encodeURIComponent(keyword)}&key=${API_KEY}&maxResults=12&type=video&pageToken=${pageToken}`;
+            const searchRes = await fetch(searchUrl);
+            if (!searchRes.ok) throw new Error(`API Error: ${(await searchRes.json()).error.message}`);
+            const searchData = await searchRes.json();
+            if (searchData.items.length === 0) { if (!pageToken) showError(resultsContainer, 'No videos found for this keyword.'); return; }
+            nextPageToken = searchData.nextPageToken || '';
+            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+            const videosUrl = `${YOUTUBE_API_BASE_URL}/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${API_KEY}`;
+            const videosRes = await fetch(videosUrl);
+            if (!videosRes.ok) throw new Error(`API Error: ${(await videosRes.json()).error.message}`);
+            const videosData = await videosRes.json();
+            if (!pageToken) {
+                doc.getElementById('keyword-explorer-results').classList.remove('hidden');
+                const suggestions = await fetchAutocompleteSuggestions(keyword);
+                displayKeywordToolkit(suggestions);
+                displayKeywordAnalysis(videosData.items);
+                setupViewOptions();
+            }
+            displayVideoResults(videosData.items, resultsContainer);
+            const loadMoreContainer = doc.getElementById('load-more-container');
+            loadMoreContainer.classList.toggle('hidden', !nextPageToken);
+            if(nextPageToken) observer.observe(loadMoreContainer);
+        } catch (error) {
+            showError(resultsContainer, error.message);
+        } finally {
+            if (!pageToken) hideLoading(loadingContainer);
+        }
+    }
+    function displayKeywordAnalysis(videos) {
+        if (!videos || videos.length === 0) return;
+        const totalViews = videos.reduce((acc, v) => acc + parseInt(v.statistics.viewCount || 0), 0);
+        const totalLikes = videos.reduce((acc, v) => acc + parseInt(v.statistics.likeCount || 0), 0);
+        const totalComments = videos.reduce((acc, v) => acc + parseInt(v.statistics.commentCount || 0), 0);
+        const avgViews = totalViews / videos.length;
+        let score = 0;
+        videos.forEach(v => { const views = parseInt(v.statistics.viewCount || 0); if (views > 1000000) score += 3; else if (views > 250000) score += 2; else if (views > 50000) score += 1; });
+        const avgScore = score / videos.length;
+        let opportunityText = 'Very Easy', opportunityClass = 'score-easy';
+        if (avgScore >= 2) { opportunityText = 'Very Hard'; opportunityClass = 'score-very-hard'; } else if (avgScore >= 1.2) { opportunityText = 'Hard'; opportunityClass = 'score-hard'; } else if (avgScore >= 0.5) { opportunityText = 'Medium'; opportunityClass = 'score-medium'; }
+        const analysisContainer = doc.getElementById('keyword-analysis-container');
+        analysisContainer.innerHTML = `<div class="animated-item"><h2 class="toolkit-title">Keyword Analysis</h2><div class="keyword-analysis-card"><div class="stat-item"><h4>Opportunity</h4><span class="stat-value opportunity-score ${opportunityClass}">${opportunityText}</span></div><div class="stat-item"><h4>Avg. Views</h4><span class="stat-value">${formatNumber(avgViews)}</span></div><div class="stat-item"><h4>Avg. Likes</h4><span class="stat-value">${formatNumber(totalLikes / videos.length)}</span></div><div class="stat-item"><h4>Avg. Comments</h4><span class="stat-value">${formatNumber(totalComments / videos.length)}</span></div></div></div>`;
+        observer.observe(analysisContainer.querySelector('.animated-item'));
+    }
+    function displayKeywordToolkit(suggestions) {
+        if (suggestions.length === 0) return;
+        const container = doc.getElementById('keyword-toolkit-container');
+        container.innerHTML = `<div class="keyword-toolkit animated-item"><div class="related-keywords-box"><h2 class="toolkit-title">Related Keywords</h2><div class="keywords-wrapper"></div></div><div class="selected-keywords-box"><h2 class="toolkit-title">Selected Keywords (<span>0</span>)</h2><textarea id="selected-keywords-textarea" class="form-control" readonly></textarea><div class="selected-keywords-actions"><button id="copy-keywords-btn" class="btn-primary">Copy All</button><button id="clear-keywords-btn" class="btn-secondary">Clear</button></div></div></div>`;
+        const wrapper = container.querySelector('.keywords-wrapper');
+        suggestions.forEach(tag => { const chip = doc.createElement('button'); chip.className = 'related-keyword-chip'; chip.innerHTML = `${tag} <i class="fas fa-plus"></i>`; chip.onclick = (e) => addKeywordToSelection(tag, e.currentTarget); wrapper.appendChild(chip); });
+        observer.observe(container.querySelector('.animated-item'));
+        doc.getElementById('copy-keywords-btn').addEventListener('click', (e) => copyToClipboard(doc.getElementById('selected-keywords-textarea').value, e.currentTarget));
+        doc.getElementById('clear-keywords-btn').addEventListener('click', () => { selectedKeywords.clear(); updateSelectedKeywordsBox(); container.querySelectorAll('.related-keyword-chip.added').forEach(c => { c.classList.remove('added'); c.innerHTML = `${c.textContent.trim()} <i class="fas fa-plus"></i>`; }); });
+    }
+    function addKeywordToSelection(keyword, element) { if (selectedKeywords.has(keyword)) return; selectedKeywords.add(keyword); element.classList.add('added'); element.innerHTML = `${keyword} <i class="fas fa-check"></i>`; updateSelectedKeywordsBox(); }
+    function updateSelectedKeywordsBox() { doc.getElementById('selected-keywords-textarea').value = [...selectedKeywords].join(', '); doc.querySelector('.selected-keywords-box h2 span').textContent = selectedKeywords.size; }
+
+    // --- VIDEO ANALYZER ---
+    async function handleVideoAnalysis(e) { e.preventDefault(); const videoInput = doc.getElementById('video-url-input').value.trim(); const videoId = parseVideoId(videoInput); if (!videoId) { alert('Invalid Video URL or ID'); return; } const loader = doc.getElementById('video-analysis-loading'); const resultDiv = doc.getElementById('video-analysis-result'); showLoading(loader); resultDiv.innerHTML = ''; try { const url = `${YOUTUBE_API_BASE_URL}/videos?part=snippet,statistics,contentDetails&id=${videoId}&key=${API_KEY}`; const res = await fetch(url); if (!res.ok) throw new Error(`API Error: ${(await res.json()).error.message}`); const data = await res.json(); if (data.items.length === 0) throw new Error('Video not found.'); const video = data.items[0]; const { snippet, statistics } = video; const tagsHtml = snippet.tags ? snippet.tags.map(tag => `<span class="tag-chip">${tag}</span>`).join('') : 'No tags provided.'; resultDiv.innerHTML = `<div class="video-analysis-grid animated-item"><div class="thumbnail-container"><img src="${snippet.thumbnails.high?.url}" alt="Video thumbnail"></div><div><h3 style="margin-top:0;">${snippet.title}</h3><p class="channel-info" style="font-size:1rem;">by <a href="https://youtube.com/channel/${snippet.channelId}" target="_blank">${snippet.channelTitle}</a></p><div class="video-stats-detailed"><div class="stat-item"><h4>Views</h4><span class="stat-value">${formatNumberLong(statistics.viewCount)}</span></div><div class="stat-item"><h4>Likes</h4><span class="stat-value">${formatNumberLong(statistics.likeCount)}</span></div><div class="stat-item"><h4>Comments</h4><span class="stat-value">${formatNumberLong(statistics.commentCount)}</span></div></div></div></div><div class="description-box animated-item"><h4 class="toolkit-title" style="margin:0 0 10px;">Description</h4>${snippet.description || 'No description provided.'}</div><div class="tags-box animated-item"><h4 class="toolkit-title">Tags</h4><div class="keywords-wrapper">${tagsHtml}</div></div>`; resultDiv.querySelectorAll('.animated-item').forEach(el => observer.observe(el)); } catch (error) { showError(resultDiv, error.message); } finally { hideLoading(loader); } }
+
+    // --- CHANNEL ANALYZER ---
+    async function handleChannelAnalysis(e) { e.preventDefault(); const channelInput = doc.getElementById('channel-url-input').value.trim(); const loader = doc.getElementById('channel-analysis-loading'); const resultDiv = doc.getElementById('channel-analysis-result'); showLoading(loader); resultDiv.innerHTML = ''; try { let channelId = ''; const handleRegex = /@([a-zA-Z0-9_.-]+)/; const idRegex = /(?:channel\/|c\/)([a-zA-Z0-9_-]+)/; if (channelInput.match(handleRegex)) { const handle = channelInput.match(handleRegex)[0]; const searchUrl = `${YOUTUBE_API_BASE_URL}/search?part=id&q=${handle}&type=channel&key=${API_KEY}`; const searchRes = await fetch(searchUrl); if (!searchRes.ok) throw new Error('Could not resolve channel handle.'); const searchData = await searchRes.json(); if (searchData.items.length > 0) channelId = searchData.items[0].id.channelId; } else if (channelInput.match(idRegex)) { channelId = channelInput.match(idRegex)[1]; } else { channelId = channelInput; } if (!channelId) throw new Error('Could not find channel.'); const channelUrl = `${YOUTUBE_API_BASE_URL}/channels?part=snippet,statistics,brandingSettings&id=${channelId}&key=${API_KEY}`; const channelRes = await fetch(channelUrl); if (!channelRes.ok) throw new Error(`API Error: ${(await channelRes.json()).error.message}`); const channelData = await channelRes.json(); if (channelData.items.length === 0) throw new Error('Channel not found.'); const channel = channelData.items[0]; const videosUrl = `${YOUTUBE_API_BASE_URL}/search?part=snippet&channelId=${channelId}&maxResults=12&order=date&type=video&key=${API_KEY}`; const videosRes = await fetch(videosUrl); const videosData = await videosRes.json(); const { snippet, statistics, brandingSettings } = channel; resultDiv.innerHTML = `<div class="animated-item">${brandingSettings.image ? `<img src="${brandingSettings.image.bannerExternalUrl}?w=1060&h=175" class="channel-banner">` : ''}<div class="channel-header"><img src="${snippet.thumbnails.high.url}" alt="Channel PFP" class="channel-pfp"><div><h3 class="channel-name">${snippet.title}</h3><p class="channel-handle">@${snippet.customUrl}</p></div></div><div class="channel-stats-grid"><div class="stat-item"><h4>Subscribers</h4><span class="stat-value">${formatNumber(statistics.subscriberCount)}</span></div><div class="stat-item"><h4>Total Views</h4><span class="stat-value">${formatNumber(statistics.viewCount)}</span></div><div class="stat-item"><h4>Total Videos</h4><span class="stat-value">${formatNumberLong(statistics.videoCount)}</span></div></div></div><div class="animated-item"><h2 class="toolkit-title" style="margin-top: 2rem;">Recent Videos</h2><div id="channel-videos-grid" class="results-grid" style="--grid-columns: 4; margin-top:0;"></div></div>`; if (videosData.items.length > 0) { const recentVideoIds = videosData.items.map(item => item.id.videoId).join(','); const vidsDetailsUrl = `${YOUTUBE_API_BASE_URL}/videos?part=statistics,contentDetails&id=${recentVideoIds}&key=${API_KEY}`; const vidsDetailsRes = await fetch(vidsDetailsUrl); const vidsDetailsData = await vidsDetailsRes.json(); const fullVideoData = videosData.items.map(v => { const details = vidsDetailsData.items.find(d => d.id === v.id.videoId); return { ...v, ...details }; }); displayVideoResults(fullVideoData, resultDiv.querySelector('#channel-videos-grid')); } else { resultDiv.querySelector('#channel-videos-grid').innerHTML = `<p>No recent videos found.</p>`; } resultDiv.querySelectorAll('.animated-item').forEach(el => observer.observe(el)); } catch (error) { showError(resultDiv, error.message); } finally { hideLoading(loader); } }
+
+    // --- CONTENT TOOLS ---
+    function handleTitleGeneration(e) { e.preventDefault(); const keyword = doc.getElementById('title-keyword-input').value.trim(); if (!keyword) return; const templates = [ `The Ultimate Guide to ${keyword}`, `[${new Date().getFullYear()}] ${keyword} For Beginners`, `Why Everyone Is Talking About ${keyword}`, `5 Common Mistakes with ${keyword}`, `I Tried ${keyword} For 30 Days... Here's What Happened`, `${keyword}: Is It REALLY Worth It?`, `The SECRET to Perfect ${keyword}`, `Unboxing & Review: The Best ${keyword}`, `${keyword} vs. [Competitor]: The Ultimate Showdown`, `How To Master ${keyword} in Under 10 Minutes` ]; const list = doc.getElementById('generated-titles-list'); list.innerHTML = ''; const template = doc.getElementById('generated-title-template'); templates.forEach(title => { const li = template.content.cloneNode(true); const span = li.querySelector('span'); const btn = li.querySelector('.copy-btn'); span.textContent = title; btn.onclick = () => copyToClipboard(title, btn); list.appendChild(li); }); }
+    async function handleTagGeneration(e) { e.preventDefault(); const keyword = doc.getElementById('tag-keyword-input').value.trim(); if (!keyword) return; const loader = doc.getElementById('tag-generator-loading'); const resultDiv = doc.getElementById('tag-generator-result'); showLoading(loader); resultDiv.classList.add('hidden'); try { const suggestions = await fetchAutocompleteSuggestions(keyword); doc.getElementById('generated-tags-textarea').value = [keyword, ...suggestions].join(', '); resultDiv.classList.remove('hidden'); } catch (error) { alert('Could not fetch tags. Please try again.'); } finally { hideLoading(loader); } }
+
+    // --- RANK CHECKER ---
+    async function handleRankCheck(e) { e.preventDefault(); const videoIdInput = doc.getElementById('video-id-input').value.trim(); const keyword = doc.getElementById('rank-keyword-input').value.trim(); const videoId = parseVideoId(videoIdInput); if (!videoId) { alert('Invalid Video ID or URL'); return; } const loader = doc.getElementById('rank-check-loading'); const resultDiv = doc.getElementById('rank-check-result'); showLoading(loader); resultDiv.innerHTML = ''; try { let rank = -1, pageToken = '', pos = 0; for (let i = 0; i < 4; i++) { const url = `${YOUTUBE_API_BASE_URL}/search?part=id&q=${encodeURIComponent(keyword)}&key=${API_KEY}&maxResults=15&type=video&pageToken=${pageToken}`; const res = await fetch(url); if (!res.ok) throw new Error(`API Error: ${(await res.json()).error.message}`); const data = await res.json(); const foundIndex = data.items.findIndex(item => item.id.videoId === videoId); if (foundIndex !== -1) { rank = pos + foundIndex + 1; break; } pos += data.items.length; if (!data.nextPageToken || data.items.length === 0) break; pageToken = data.nextPageToken; } resultDiv.innerHTML = rank !== -1 ? `🎉 <span class="rank-found">Rank Found: #${rank}</span>` : `😔 <span class="rank-not-found">Not found in top ~60 results.</span>`; } catch (error) { showError(resultDiv, error.message); } finally { hideLoading(loader); } }
+
+    // --- TRENDING ---
+    async function fetchTrendingVideos() {
+        const regionCode = doc.getElementById('region-select').value;
+        const loader = doc.getElementById('trending-loading');
+        const results = doc.getElementById('trending-results');
+        showLoading(loader);
+        results.innerHTML = '';
+        try {
+            const url = `${YOUTUBE_API_BASE_URL}/videos?part=snippet,statistics,contentDetails&chart=mostPopular&regionCode=${regionCode}&maxResults=12&key=${API_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API Error: ${(await res.json()).error.message}`);
+            const data = await res.json();
+            displayVideoResults(data.items, results);
+        } catch (error) {
+            showError(results, error.message);
+        } finally {
+            hideLoading(loader);
+        }
+    }
+    
+    // --- INITIALIZATION ---
+    function init() {
+        if (!API_KEY.startsWith('AIza')) { alert('CRITICAL: API Key is missing. The tool will not work. Please add your key in the script section.'); }
+        applyTheme(localStorage.getItem('theme') || 'light');
+        doc.getElementById('theme-toggle').addEventListener('click', () => { const newTheme = doc.body.classList.contains('dark-mode') ? 'light' : 'dark'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
+        
+        // The tab navigation has been removed in favor of a dashboard layout.
+        // This event listener is commented out to prevent errors and disable the old functionality.
+        // doc.querySelector('.tabs-nav').addEventListener('click', (e) => { if (e.target.matches('.tab-btn')) { const tabName = e.target.dataset.tab; if (tabName === activeTab) return; doc.querySelector('.tab-btn.active').classList.remove('active'); e.target.classList.add('active'); doc.getElementById(`${activeTab}-tab`).classList.add('hidden'); doc.getElementById(`${tabName}-tab`).classList.remove('hidden'); activeTab = tabName; if (tabName === 'trending' && doc.getElementById('trending-results').innerHTML.trim() === '') fetchTrendingVideos(); } });
+        
+        // Fetch trending videos on initial load
+        fetchTrendingVideos();
+
+        doc.getElementById('research-form').addEventListener('submit', (e) => { e.preventDefault(); startNewSearch(doc.getElementById('keyword-input').value.trim()); });
+        doc.getElementById('loadMoreBtn').addEventListener('click', () => executeKeywordSearch(currentKeyword, nextPageToken));
+        doc.getElementById('video-analysis-form').addEventListener('submit', handleVideoAnalysis);
+        doc.getElementById('channel-analysis-form').addEventListener('submit', handleChannelAnalysis);
+        doc.getElementById('title-generator-form').addEventListener('submit', handleTitleGeneration);
+        doc.getElementById('tag-generator-form').addEventListener('submit', handleTagGeneration);
+        doc.getElementById('copy-tags-btn').addEventListener('click', (e) => copyToClipboard(doc.getElementById('generated-tags-textarea').value, e.currentTarget));
+        doc.getElementById('rank-check-form').addEventListener('submit', handleRankCheck);
+        doc.getElementById('region-select').addEventListener('change', fetchTrendingVideos);
+    }
+    doc.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
